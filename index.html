@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+</head>
+<body>
+
+<form action="/action_page.php">
+    <input type="file" id="inputFile" name="filename" accept=".xyz" onchange="changeDisplay()">
+    <input type="submit">
+</form>
+
+
+<div class="flex-container">
+
+    <p>uploaded file : </p>
+    <p id="demo"></p>
+
+    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+    <div id="preview" style="height: 300px; width: 500px;"
+    class='viewer_3Dmoljs' data-datatype='xyz'
+    data-backgroundcolor='0xffffff'
+    data-href='randomMol.xyz'
+    data-send="false"
+    data-style='stick'>
+    </div>
+</div>
+
+
+
+<script>
+
+function changeDisplay() {
+  const [file] = document.getElementById("inputFile").files;
+  $(".viewer_3Dmoljs").data('href',URL.createObjectURL(file));
+  document.getElementById("demo").innerHTML = $('.viewer_3Dmoljs').data('href');
+  var script = document.createElement("script");
+
+  script.setAttribute("type", "text/javascript");
+  script.setAttribute("src", "https://3Dmol.csb.pitt.edu/build/3Dmol-min.js");
+  document.getElementsByTagName("head")[0].appendChild(script);
+
+
+}
+
+
+
+</script>
+
+<!--
+
+inputFile.onchange = evt => {
+    const [file] = inputFile.files
+    if (file) {
+        document.getElementById("preview").href = URL.createObjectURL(file)
+    }
+  }
+
+    $(".viewer_3Dmoljs").attr('data-href',encodeURIComponent(URL.createObjectURL(file)));
+-->
+
+
+</body>
+</html>
