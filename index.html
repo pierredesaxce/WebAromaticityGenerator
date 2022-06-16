@@ -12,20 +12,30 @@
 </form>
 
 
-<div class="flex-container">
+<div id="display" class="flex-container">
 
     <p>uploaded file : </p>
-    <p id="demo"></p>
+    <p id="molFile"></p>
 
-    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+<!--
+    citation needed :
+    https://academic.oup.com/bioinformatics/article/31/8/1322/213186
+    if I forget please remind me
+-->
+
+
+    <script id="molVisuScript" src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
 
     <div id="preview" style="height: 300px; width: 500px;"
     class='viewer_3Dmoljs' data-datatype='xyz'
     data-backgroundcolor='0xffffff'
     data-href='randomMol.xyz'
-    data-send="false"
     data-style='stick'>
     </div>
+
+
+
 </div>
 
 
@@ -33,14 +43,46 @@
 <script>
 
 function changeDisplay() {
-  const [file] = document.getElementById("inputFile").files;
-  $(".viewer_3Dmoljs").data('href',URL.createObjectURL(file));
-  document.getElementById("demo").innerHTML = $('.viewer_3Dmoljs').data('href');
-  var script = document.createElement("script");
 
-  script.setAttribute("type", "text/javascript");
-  script.setAttribute("src", "https://3Dmol.csb.pitt.edu/build/3Dmol-min.js");
-  document.getElementsByTagName("head")[0].appendChild(script);
+  const [file] = document.getElementById("inputFile").files;
+
+
+  var divToDel = document.getElementById("preview");
+  divToDel.parentNode.removeChild(divToDel);
+
+  var div = document.createElement("div");
+
+  div.id="preview";
+  div.style.height = "300px";
+  div.style.width = "500px";
+  div.style.position = "relative";
+  div.className='viewer_3Dmoljs'
+
+
+  div.setAttribute('data-datatype','xyz');
+  div.setAttribute('data-backgroundcolor','0xffffff');
+  div.setAttribute('data-href',URL.createObjectURL(file));
+  div.setAttribute('data-style','stick');
+
+
+  document.getElementById("display").appendChild(div);
+
+  document.getElementById("molFile").innerHTML = $('.viewer_3Dmoljs').data('href');
+
+
+  let element = $('#preview');
+  let config = { backgroundColor: '0xffffff' };
+
+  let viewer = $3Dmol.createViewer( element, config );
+
+
+  viewer.addModel($('.viewer_3Dmoljs').data('href'), "xyz");
+
+  viewer.addSurface($3Dmol.SurfaceType.VDW, {opacity:0.85, volscheme: new $3Dmol.Gradient.RWB(-10,10)},{});
+
+  viewer.render();
+  viewer.zoomTo();
+
 
 
 }
@@ -48,19 +90,6 @@ function changeDisplay() {
 
 
 </script>
-
-<!--
-
-inputFile.onchange = evt => {
-    const [file] = inputFile.files
-    if (file) {
-        document.getElementById("preview").href = URL.createObjectURL(file)
-    }
-  }
-
-    $(".viewer_3Dmoljs").attr('data-href',encodeURIComponent(URL.createObjectURL(file)));
--->
-
 
 </body>
 </html>
