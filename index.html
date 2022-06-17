@@ -15,8 +15,6 @@
 <div id="display" class="flex-container">
 
     <p>uploaded file : </p>
-    <p id="molFile"></p>
-
 
 <!--
     citation needed :
@@ -29,8 +27,8 @@
 
     <div id="preview" style="height: 300px; width: 500px;"
     class='viewer_3Dmoljs' data-datatype='xyz'
-    data-backgroundcolor='0xffffff'
-    data-href='randomMol.xyz'
+    data-backgroundcolor='0xFFFFFF'
+    data-href=''
     data-style='stick'>
     </div>
 
@@ -46,43 +44,9 @@ function changeDisplay() {
 
   const [file] = document.getElementById("inputFile").files;
 
+  $('.viewer_3Dmoljs').data('href',URL.createObjectURL(file));
 
-  var divToDel = document.getElementById("preview");
-  divToDel.parentNode.removeChild(divToDel);
-
-  var div = document.createElement("div");
-
-  div.id="preview";
-  div.style.height = "300px";
-  div.style.width = "500px";
-  div.style.position = "relative";
-  div.className='viewer_3Dmoljs'
-
-
-  div.setAttribute('data-datatype','xyz');
-  div.setAttribute('data-backgroundcolor','0xffffff');
-  div.setAttribute('data-href',URL.createObjectURL(file));
-  div.setAttribute('data-style','stick');
-
-
-  document.getElementById("display").appendChild(div);
-
-  document.getElementById("molFile").innerHTML = $('.viewer_3Dmoljs').data('href');
-
-
-  let element = $('#preview');
-  let config = { backgroundColor: '0xffffff' };
-
-  let viewer = $3Dmol.createViewer( element, config );
-
-
-  viewer.addModel($('.viewer_3Dmoljs').data('href'), "xyz");
-
-  viewer.addSurface($3Dmol.SurfaceType.VDW, {opacity:0.85, volscheme: new $3Dmol.Gradient.RWB(-10,10)},{});
-
-  viewer.render();
-  viewer.zoomTo();
-
+  $3Dmol.autoload();
 
 
 }
