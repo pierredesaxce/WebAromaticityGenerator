@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-
+<title>WebAromaticityGenerator</title>
 </head>
 <body>
 
-<form action="/action_page.php">
-    <input type="file" id="inputFile" name="filename" accept=".xyz" onchange="changeDisplay()">
+<form action="/confirmation" enctype="multipart/form-data" method="POST">
+    <label> Molecule a calculer (au format xyz) : </label>
+    <input type="file" id="inputFile" name="inputFile" accept=".xyz" onchange="updateMolecule()" required>
+    <br>
+    <label> Adresse mail pour recevoir les resultats : </label>
+    <input type="email" id="mail" name="mail" required>
+    <br>
+    <br>
     <input type="submit">
 </form>
 
+<br>
 
 <div id="display" class="flex-container">
 
-    <p>uploaded file : </p>
+    <p>Molecule envoye : </p>
 
 <!--
     citation needed :
@@ -40,7 +46,7 @@
 
 <script>
 
-function changeDisplay() {
+function updateMolecule() {
 
   const [file] = document.getElementById("inputFile").files;
 
