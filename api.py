@@ -96,11 +96,13 @@ def google_connect():  # DON'T ASK ME ABOUT THAT DOGSHIT. FUCK GOOGLE
 
 def check_subg16_job_status():
     with app.app_context():
+
         for job_id in running_subg16_job_mail:
             stdin, stdout, stderr = ssh_client.exec_command("/usr/bin/sacct -p -j " + job_id)
             output = stdout.readlines()
             output_status = (output[-1].split("|"))[-3]
             print(output_status)
+            job_done = []
             if output_status == "FAILED":
                 msg = mail.send_message(
                     "Resultat calcul d\'aromaticité",
@@ -108,16 +110,20 @@ def check_subg16_job_status():
                     recipients=[running_subg16_job_mail[job_id]],
                     body="Votre calcul d'aromaticité à échoué. Re-essayez et vérifiez que le document envoyé est le "
                          "bon.")
-                running_subg16_job_mail.pop(job_id)
+                job_done.append(job_id)
             elif output_status == "COMPLETED":
                 msg = mail.send_message(
                     "Resultat calcul d\'aromaticité",
                     sender='aromaticitybot@gmail.com',
                     recipients=[running_subg16_job_mail[job_id]],
                     body="Votre calcul d'aromaticité ( id = " + job_id + ") vient de se terminer. Retrouvez les "
-                         "résultats à l'adresse : " +
+                                                                         "résultats à l'adresse : " +
                          "http://localhost:5000/result/" + job_id)
                 running_subg16_job_mail.pop(job_id)
+                job_done.append(job_id)
+
+        for job in job_done:
+            running_subg16_job_mail.pop(job)
 
             """context = ssl.create_default_context()
     
@@ -161,7 +167,7 @@ def confirm():
         nfile.write(line.decode('UTF-8'))
         print(line.decode('UTF-8'))  # need decode cause line is type Byte not String
 
-    mail = request.form.get('mail')
+    input_mail = request.form.get('mail')
     nfile.write("\n")
     nfile.write("\n")
     nfile.close()
@@ -173,11 +179,11 @@ def confirm():
     stdin, stdout, stderr = ssh_client.exec_command("./modifiedsubg16 inputMolecule.com")
     job_id = ((stdout.readlines())[-1].split())[-1]
     print(job_id)
-    running_subg16_job_mail[job_id] = mail
+    running_subg16_job_mail[job_id] = input_mail
 
     # todo : check if the calcul as been started properly. if yes return confirmation.html, if not return failed.html
     # todo : create failed.html to tell the user why his request failed
-    return render_template("confirmation.html", mail=mail)
+    return render_template("confirmation.html", mail=input_mail)
 
 
 @app.route("/")
@@ -188,7 +194,7 @@ def index():
 if __name__ == "__main__":
     google_connect()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
+    scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=300)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
     app.run()
