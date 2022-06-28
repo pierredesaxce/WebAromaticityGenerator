@@ -115,7 +115,7 @@ def interface_create_projection(filename):
 
 
 def no_GUI_create_projection():
-    #filename_to_parse = input("emplacement du fichier à parser : \n")# // todo: uncomment that
+    # filename_to_parse = input("emplacement du fichier à parser : \n")# // todo: uncomment that
     filename_to_parse = "ressources/test.txt"  # //todo : comment that
     while not os.path.isfile(filename_to_parse):
         filename_to_parse = input("chemin incorrect ou incomplet. veuillez re-essayer : \n")
@@ -134,6 +134,7 @@ def create_projection(filename):
     fig, ax = plt.subplots(1, 2, figsize=(10, 5), dpi=80)
     ax[0].set_aspect('equal', adjustable='box')
     ax[1].set_aspect('equal', adjustable='box')
+    ax[1].set_facecolor((1, 0.898, 0.8))
 
     # //todo : maybe put everything in a class and do the file reading in the constructor. (would need to send ax)
     list_mol = []
@@ -158,7 +159,7 @@ def create_projection(filename):
     for line in file.readlines():
 
         cur_line = line.split()
-        #print(cur_line)  # not needed // todo : remove at the end
+        # print(cur_line)  # not needed // todo : remove at the end
 
         if len(cur_line) == 0:  # no word on the line => blank line separating aromaticity
             if origin_x is not None:

@@ -7,17 +7,16 @@ import os
 import os.path
 import os.path
 import sys
-
+import smtplib
+import traceback
 import paramiko
+
+import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
 from flask import Flask, render_template, request
-from flask_mail import Mail
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from flask_mail import Mail, Message
+
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # If modifying these scopes, delete the file token.json.
@@ -35,9 +34,7 @@ username = file.readline()
 username = username[:-1]
 password = file.readline()
 password = password[:-1]
-gmail_address = file.readline()
-gmail_address = gmail_address[:-1]
-gmail_password = file.readline()
+mail_address = file.readline()
 
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -46,56 +43,24 @@ ssh_client.connect(hostname="10.184.4.20", username=username, password=password,
 running_subg16_job_mail = {}
 aromaticity_fig_result = {}
 
-app.config.update(
-    DEBUG=True,
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=465,
-    MAIL_USE_SSL=True,
-    MAIL_USERNAME=gmail_address,
-    MAIL_PASSWORD=gmail_password
-)
 
-mail = Mail(app)
+def send_email(receiver, subject, body):
+    sender = mail_address
+    receivers = [receiver]
 
+    m = email.message.Message()
+    m['From'] = mail_address
+    m['To'] = receiver
+    m['Subject'] = subject
 
-def google_connect():  # DON'T ASK ME ABOUT THAT DOGSHIT. FUCK GOOGLE
-    """Shows basic usage of the Gmail API.
-    Lists the user's Gmail labels.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
+    m.set_payload(body)
 
     try:
-        # Call the Gmail API
-        service = build('gmail', 'v1', credentials=creds)
-        results = service.users().labels().list(userId='me').execute()
-        labels = results.get('labels', [])
-
-        if not labels:
-            print('No labels found.')
-            return
-        print('Labels:')
-        for label in labels:
-            print(label['name'])
-
-    except HttpError as error:
-        # TODO(developer) - Handle errors from gmail API.
-        print(f'An error occurred: {error}')
+        smtpObj = smtplib.SMTP('smtp.univ-amu.fr', 25)
+        smtpObj.sendmail(sender, receivers, m.as_string())
+        print("Successfully sent email")
+    except:
+        print(traceback.format_exc())
 
 
 def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it will be useful later
@@ -106,44 +71,30 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
             output = stdout.readlines()
             output_status = (output[-1].split("|"))[-3]
             print(output_status)
+
             if output_status == "FAILED":
-                msg = mail.send_message(
-                    "Resultat calcul d\'aromaticité",
-                    sender=gmail_address,
-                    recipients=[running_subg16_job_mail[job_id]],
-                    body="Votre calcul d'aromaticité à échoué. Re-essayez et vérifiez que le document envoyé est "
-                         "correct")
+
+                subject = "Resultat calcul d\'aromaticite"
+                body = "Votre calcul d'aromaticite a echoue. Re-essayez et verifiez que le document envoye est correct"
+                send_email(running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
+
             elif output_status == "COMPLETED":
+
                 png_image = io.BytesIO()
                 FigureCanvas(create_projection("./output/test.txt")).print_png(png_image)
                 pngImageB64String = "data:image/png;base64,"
                 pngImageB64String += base64.b64encode(png_image.getvalue()).decode('utf8')
                 aromaticity_fig_result[0] = pngImageB64String
-                msg = mail.send_message(
-                    "Resultat calcul d\'aromaticité",
-                    sender=gmail_address,
-                    recipients=[running_subg16_job_mail[job_id]],
-                    body="Votre calcul d'aromaticité ( id = " + job_id + ") vient de se terminer. Retrouvez les "
-                                                                         "résultats à l'adresse : " +
-                         "http://localhost:5000/result/" + job_id)
+                subject = "Resultat calcul d\'aromaticite"
+                body = "Votre calcul d'aromaticite ( id = " + job_id + ") vient de se terminer. Retrouvez les " \
+                                                                       "resultats a l'adresse : " \
+                                                                       "http://localhost:5000/result/" + job_id
+                send_email(running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
         for job in job_done:  # remove all job completed
             running_subg16_job_mail.pop(job)
-
-            """context = ssl.create_default_context()
-
-            sender_email = "aromaticitybot@gmail.com"
-            receiver_email = "pierredesaxce@gmail.com"
-            message = "texte : " + running_subg16_job_mail[job_id]
-
-            with smtplib.SMTP("localhost", port) as server:
-                server.ehlo()
-                server.starttls(context=context)
-                server.ehlo()
-                server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_email, message)"""
 
 
 @app.route('/result/<id>')
@@ -236,9 +187,8 @@ def index():
 
 
 if __name__ == "__main__":
-    google_connect()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=300)
+    scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
     app.run()
