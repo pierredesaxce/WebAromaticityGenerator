@@ -50,4 +50,7 @@ To use it, you just need to go into the project folder and use the following com
 python3 api.py
 ```
 
-It will open create a server on localhost using the port 5000. The user can open the main page of the website by going to [http](http://localhost:5000/) . There they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
+It will open create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
+ 
+An exemple page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
+It only work with one file ( output/test.txt ) and is not a fully finished feature rn.
