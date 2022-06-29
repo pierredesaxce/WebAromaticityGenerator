@@ -19,9 +19,6 @@ from flask_mail import Mail, Message
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-# If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-
 app = Flask(__name__)
 
 try:
@@ -44,12 +41,18 @@ running_subg16_job_mail = {}
 aromaticity_fig_result = {}
 
 
-def send_email(receiver, subject, body):
-    sender = mail_address
+def send_email(sender, receiver, subject, body):
+    """Send an email using the parameters. The email is sent through the smtp server of Aix-Marseille University
+    :param sender: address used to send the email.
+    :param receiver: address of the receiver of the email.
+    :param subject: subject of the email
+    :param body: body of the email
+    """
+    sender = sender
     receivers = [receiver]
 
     m = email.message.Message()
-    m['From'] = mail_address
+    m['From'] = sender
     m['To'] = receiver
     m['Subject'] = subject
 
@@ -64,6 +67,8 @@ def send_email(receiver, subject, body):
 
 
 def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it will be useful later
+    """Check if the subg16 jobs started are done. If a job is finished, retrieve the log file with the result,
+    email the user and remove it from the dictionary of job to check. """
     with app.app_context():
         job_done = []
         for job_id in running_subg16_job_mail:
@@ -76,10 +81,16 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
 
                 subject = "Resultat calcul d\'aromaticite"
                 body = "Votre calcul d'aromaticite a echoue. Re-essayez et verifiez que le document envoye est correct"
-                send_email(running_subg16_job_mail[job_id], subject, body)
+                send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
             elif output_status == "COMPLETED":
+
+                nfile_name = 'inputMolecule.log'
+                ftp_client = ssh_client.open_sftp()
+                ftp_client.get("/home/" + username + "/slurm-output/" + id + "/" + nfile_name,
+                               "./output/" + id + ".log")
+                ftp_client.close()
 
                 png_image = io.BytesIO()
                 FigureCanvas(create_projection("./output/test.txt")).print_png(png_image)
@@ -90,7 +101,7 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
                 body = "Votre calcul d'aromaticite ( id = " + job_id + ") vient de se terminer. Retrouvez les " \
                                                                        "resultats a l'adresse : " \
                                                                        "http://localhost:5000/result/" + job_id
-                send_email(running_subg16_job_mail[job_id], subject, body)
+                send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
         for job in job_done:  # remove all job completed
@@ -99,17 +110,18 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
 
 @app.route('/result/<id>')
 def show_result(id):
-    nfile_name = 'inputMolecule.log'
-
-    ftp_client = ssh_client.open_sftp()
-    ftp_client.get("/home/" + username + "/slurm-output/" + id + "/" + nfile_name, "./output/" + id + ".log")
-    ftp_client.close()
-
     try:
         output_file = open("./output/" + id + ".log", "r")
+        nfile_name = 'inputMolecule.log'
+        ftp_client = ssh_client.open_sftp()
+
+        ftp_client.get("/home/" + username + "/slurm-output/" + id + "/" + nfile_name,
+                       "./output/" + id + ".log")
+        ftp_client.close()
+
     except:
-        print("output_file missing")
-        sys.exit(1)
+
+        return render_template("resultMissing.html")
 
     result = "".join(output_file.readlines())
 
@@ -170,7 +182,7 @@ def test():
     # 1. generate the png of the plot when the mail is sent.
     # (generates lots of trash file, even if the server is shutdown once rebooted the results stay available,
     # no processing time when user open the page)
-    # 2. make fig into a global dictionnary and generate the graph when
+    # 2. make fig into a global dictionary and generate the graph when
     # the mail is sent. (no extra file generated, no processing time when page is open, need more memory,
     # results are loss when server is shutdown) <--- CURRENT CHOSEN SOLUTION, found in check_subg16_job_status()
     """png_image = io.BytesIO()
