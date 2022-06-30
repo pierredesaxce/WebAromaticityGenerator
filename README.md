@@ -42,6 +42,8 @@ The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use 
 
 The "resultMailAddress" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
 
+It is required to create a folder called "slurm-input" and a folder called "slurm-output" on the cluster at the root of your personnal folder.
+
 # Usage
 
 To use it, you just need to go into the project folder and use the following command :
