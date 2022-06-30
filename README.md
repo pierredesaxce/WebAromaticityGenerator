@@ -7,7 +7,7 @@
 You can download the code by using this command where you want it to be :
 
 ```
-git clone https://github.com/pierredesaxce/MolAromaProjection.git
+git clone https://github.com/pierredesaxce/WebAromaticityGenerator.git
 ```
 
 ### Temporary
