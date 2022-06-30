@@ -88,8 +88,8 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
 
                 nfile_name = 'inputMolecule.log'
                 ftp_client = ssh_client.open_sftp()
-                ftp_client.get("/home/" + username + "/slurm-output/" + id + "/" + nfile_name,
-                               "./output/" + id + ".log")
+                ftp_client.get("/home/" + username + "/slurm-output/" + job_id + "/" + nfile_name,
+                               "./output/" + job_id + ".log")
                 ftp_client.close()
 
                 png_image = io.BytesIO()
@@ -164,7 +164,8 @@ def confirm():
     ftp_client = ssh_client.open_sftp()
     ftp_client.put(nfile_name, "/home/" + username + "/slurm-input/" + nfile_name)
     ftp_client.close()
-    stdin, stdout, stderr = ssh_client.exec_command("cd ./slurm-input && ./modifiedsubg16 inputMolecule.com")
+    stdin, stdout, stderr = ssh_client.exec_command(
+        "cd ./slurm-input && /share/programs/bin/modifiedsubg16 inputMolecule.com")
     job_id = ((stdout.readlines())[-1].split())[-1]
     print(job_id)
     running_subg16_job_mail[job_id] = input_mail
