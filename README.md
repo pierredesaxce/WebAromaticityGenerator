@@ -7,7 +7,7 @@
 You can download the code by using this command where you want it to be :
 
 ```
-git clone https://github.com/pierredesaxce/MolAromaProjection.git
+git clone https://github.com/pierredesaxce/WebAromaticityGenerator.git
 ```
 
 ### Temporary
@@ -41,6 +41,8 @@ resultMailAddress
 The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. The address sending them is alta@univ-amu.fr .
 
 The "resultMailAddress" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
+
+It is required to create a folder called "slurm-input" and a folder called "slurm-output" on the cluster at the root of your personnal folder.
 
 # Usage
 
