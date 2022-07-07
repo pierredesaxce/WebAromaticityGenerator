@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html>
+{%extends "header.html" %}
+{%block content%}
 
-<head>
-<title>WebAromaticityGenerator</title>
-</head>
-
-<body>
-
-{% block body %}
-
+<a href="/result">
+    <button>Chercher un autre résultat</button>
+</a>
+<br>
 <p> Voici les resultats de votre requete :</p>
 
 <br>
@@ -17,7 +13,3 @@
 
 
 {% endblock %}
-
-</body>
-
-</html>

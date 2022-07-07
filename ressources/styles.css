@@ -1,0 +1,76 @@
+.navbar {
+  width: 99%;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: lightgreen;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  display: inline-block;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+
+.nav-item a {
+  display: inline-block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: darkgreen;
+}
+
+.nav-item:hover {
+  background-color: darkgreen;
+}
+
+.nav-item:hover a {
+  color: lightgreen;
+}
+
+footer {
+  display: flex;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 3px;
+  background-color: black;
+  color: white;
+}
+
+.submission-box{
+  display: flex;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction : row;
+  justify-content: space-between;
+  align-content : center;
+  align-items: center;
+  outline: 2px solid black;
+  border-radius: 15px;
+}
+
+.form-box {
+  flex-grow: 1;
+  padding-left: 5px;
+  padding-right: 15px;
+
+}
+
+.scam {
+  flex-grow: 1;
+}
+
+.viewer_3Dmoljs{
+  flex-grow: 1;
+  outline: 2px solid black;
+}

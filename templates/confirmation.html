@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-<title>WebAromaticityGenerator</title>
-</head>
-
-<body>
-
-{% block body %}
+{%extends "header.html" %}
+{%block content%}
 
 <p> Votre calcul vient de commencer. Vous recevrez un mail a l'adresse donnee quand le calcul sera fini ( {{ mail }} ).</p>
 
-<button href="#">Envoyer une autre molecule (ce bouton ne marche pas)</button>
-
+<a  href="/">
+    <button>Envoyer une autre molecule</button>
+</a>
 {% endblock %}
-
-</body>
-
-</html>

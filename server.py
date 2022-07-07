@@ -14,12 +14,15 @@ import paramiko
 import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
-from flask import Flask, render_template, request
+from flask import url_for, Flask, render_template, request
 from flask_mail import Mail, Message
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_url_path='',
+            static_folder='ressources',
+            template_folder='templates')
 
 try:
     file = open("token", "r")
@@ -193,10 +196,21 @@ def test():
 
     return render_template("test.html", image=aromaticity_fig_result[0])
 
+@app.route("/credits")
+def credits():
+    return render_template("credits.html")
+
+@app.route("/result")
+def result():
+    return render_template("searchResult.html")
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html")
 
 
 if __name__ == "__main__":

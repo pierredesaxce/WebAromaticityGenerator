@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebAromaticityGenerator</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="https://ism2.univ-amu.fr/fr/ctom/ctom" class="logo">
+      <img src=" {{url_for ('static' , filename='ctom_logo.gif') }} ">
+    </a>
+    <ul class="nav-links">
+      <li class="nav-item"><a href="/">Accueil</a></li>
+      <li class="nav-item"><a href="/result">Resultat</a></li>
+      <li class="nav-item"><a href="/credits">Credits</a></li>
+    </ul>
+  </nav>
+
+{% block content %}
+
+{% endblock %}
+
+
+<footer>
+  <p>Incredible footer with a lot of content</p>
+</footer>
+
+
+</body>
+
+</html>
