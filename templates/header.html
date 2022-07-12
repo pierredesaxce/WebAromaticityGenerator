@@ -13,9 +13,9 @@
       <img src=" {{url_for ('static' , filename='ctom_logo.gif') }} ">
     </a>
     <ul class="nav-links">
-      <li class="nav-item"><a href="/">Accueil</a></li>
-      <li class="nav-item"><a href="/result">Resultat</a></li>
-      <li class="nav-item"><a href="/credits">Credits</a></li>
+      <li class="nav-item"><a href="{{ url_for('index') }}">{{_('Accueil')}}</a></li>
+      <li class="nav-item"><a href="{{ url_for('result') }}">{{_('Resultat')}}</a></li>
+      <li class="nav-item"><a href="{{ url_for('credits') }}">{{_('Credits')}}</a></li>
     </ul>
   </nav>
 
@@ -23,12 +23,33 @@
 
 {% endblock %}
 
+</body>
 
 <footer>
-  <p>Incredible footer with a lot of content</p>
+
+    <div>
+      <h2 class="footer-heading"><a href="{{ url_for('index') }}" class="websiteName">Aromaticity Generator</a></h2>
+    </div>
+    <div>
+      <ul class="footer-links">
+        <li class="footer-link-item"><a href="{{ url_for('about') }}">{{_('À propos')}}</a></li>
+        <li class="footer-link-item"><a href="{{ url_for('contact') }}">{{_('Contact')}}</a></li>
+      </ul>
+    </div>
+    <div>
+      <ul class="footer-logos">
+        <li class="footer-logo"><a href="https://ism2.univ-amu.fr/fr/ctom/ctom" class="logo">
+          <img src=" {{url_for ('static' , filename='ctom_white_logo.gif') }} ">
+        </a></li>
+        <li class="footer-logo" ><a href="https://www.univ-amu.fr/" class="logo">
+          <img src=" {{url_for ('static' , filename='amu_logo.jpg') }} ">
+        </a></li>
+        <li class="footer-logo"><a href="https://ism2.univ-amu.fr/fr" class="logo">
+          <img src=" {{url_for ('static' , filename='ism2_logo.gif') }} ">
+        </a></li>
+      </ul>
+    </div>
+
 </footer>
-
-
-</body>
 
 </html>

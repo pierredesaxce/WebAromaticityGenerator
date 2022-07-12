@@ -1,9 +1,9 @@
 {%extends "header.html" %}
 {%block content%}
 
-<p> Votre calcul vient de commencer. Vous recevrez un mail a l'adresse donnee quand le calcul sera fini ( {{ mail }} ).</p>
+<p> {{_('Votre calcul vient de commencer. Vous recevrez un mail a l\'adresse donnee quand le calcul sera fini ')}}( {{ mail }} ).</p>
 
-<a  href="/">
-    <button>Envoyer une autre molecule</button>
+<a  href="{{ url_for('index') }}">
+    <button>{{_('Envoyer une autre molecule')}}</button>
 </a>
 {% endblock %}

@@ -1,11 +1,11 @@
 {%extends "header.html" %}
 {%block content%}
 
-<a href="/result">
-    <button>Chercher un autre résultat</button>
+<a href="{{ url_for('result') }}">
+    <button>{{_('Chercher un autre résultat')}}</button>
 </a>
 <br>
-<p> Voici les resultats de votre requete :</p>
+<p>{{_('Voici les resultats de votre requete : ')}}</p>
 
 <br>
 

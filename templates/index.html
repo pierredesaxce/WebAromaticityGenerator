@@ -5,20 +5,17 @@
 <div class="submission-box">
 
     <div class="form-box">
-        <form action="/confirmation" enctype="multipart/form-data" method="POST">
-            <label> Molecule a calculer (au format xyz) : </label><br>
+        <form action="{{ url_for('confirm') }}" enctype="multipart/form-data" method="POST">
+            <label>{{_('Molecule a calculer (au format xyz) : ')}}</label><br>
             <input type="file" id="inputFile" name="inputFile" accept=".xyz" onchange="updateMolecule()" required>
             <br>
             <br>
-            <label> Adresse mail pour recevoir les resultats : </label><br>
+            <label>{{_('Adresse mail pour recevoir les resultats : ')}}</label><br>
             <input type="email" id="mail" name="mail" required>
             <br>
             <br>
             <input type="submit">
         </form>
-    </div>
-
-    <div class="scam">
     </div>
 
     <div id="display" class="flex-item">

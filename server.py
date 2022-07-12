@@ -14,7 +14,8 @@ import paramiko
 import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
-from flask import url_for, Flask, render_template, request
+from flask import url_for, Flask, render_template, request, g
+from flask_babel import Babel
 from flask_mail import Mail, Message
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -23,6 +24,16 @@ app = Flask(__name__,
             static_url_path='',
             static_folder='ressources',
             template_folder='templates')
+app.config['LANGUAGES'] = ['en', 'fr']
+babel = Babel(app)
+
+
+@babel.localeselector
+def get_locale():
+    if not g.get('lang_code', None):
+        g.lang_code = request.accept_languages.best_match(app.config['LANGUAGES'])
+    return g.lang_code
+
 
 try:
     file = open("token", "r")
@@ -196,17 +207,31 @@ def test():
 
     return render_template("test.html", image=aromaticity_fig_result[0])
 
+
 @app.route("/credits")
 def credits():
     return render_template("credits.html")
+
 
 @app.route("/result")
 def result():
     return render_template("searchResult.html")
 
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.errorhandler(404)
 def not_found(e):

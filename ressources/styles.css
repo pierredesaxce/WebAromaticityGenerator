@@ -13,6 +13,10 @@
   display: inline-block;
 }
 
+.logo img{
+  width: 150px;
+}
+
 .nav-links {
   list-style: none;
   display: flex;
@@ -33,16 +37,55 @@
   color: lightgreen;
 }
 
+body {
+  margin-bottom:175px;
+}
+
 footer {
   display: flex;
   position: fixed;
-  left: 0;
-  bottom: 0;
+  bottom : 0;
+  left : 0;
   width: 100%;
   text-align: center;
-  padding: 3px;
-  background-color: black;
-  color: white;
+  background-color: darkgreen;
+  color: black;
+  flex-direction: column;
+  align-content: flex-start;
+  align-items: center;
+}
+
+footer div {
+    margin-bottom: -25px
+}
+
+.footer-heading a{
+  color: black;
+  text-decoration: none;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+}
+
+.footer-link-item {
+  display: inline-block;
+  padding: 10px 15px;
+}
+
+.footer-link-item a {
+  color: black;
+}
+
+.footer-logos {
+  list-style: none;
+  display: flex;
+}
+
+.footer-logo {
+  display: inline-block;
+  padding: 10px 15px;
 }
 
 .submission-box{
@@ -64,10 +107,6 @@ footer {
   padding-left: 5px;
   padding-right: 15px;
 
-}
-
-.scam {
-  flex-grow: 1;
 }
 
 .viewer_3Dmoljs{

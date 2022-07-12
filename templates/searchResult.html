@@ -1,14 +1,14 @@
 {%extends "header.html" %}
 {%block content%}
 
-ID du résultat voulu : <input id="resultID" value="">
-<button id="btn">Chercher le résultat</button>
+{{_('ID du résultat voulu : ')}}<input id="resultID" value="">
+<button id="btn">{{_('Chercher le résultat')}}</button>
 
 <script>
 window.onload = function() {
   document.getElementById('btn').onclick = function()
   {
-    window.location.href = "http://localhost:5000/result/"+document.getElementById("resultID").value
+    window.location.href = "{{ url_for('result') }}/"+document.getElementById("resultID").value
   };
 }
 </script>

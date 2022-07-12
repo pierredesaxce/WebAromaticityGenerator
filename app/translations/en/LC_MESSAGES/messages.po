@@ -1,0 +1,114 @@
+# English translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-07-11 16:07+0200\n"
+"PO-Revision-Date: 2022-07-11 16:07+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: templates/404.html:4
+msgid "Oops! Cette page n'existe pas"
+msgstr "Oops! This pafe doesn't exist."
+
+#: templates/404.html:5
+msgid "Appuyez ici"
+msgstr "Press here"
+
+#: templates/404.html:5
+msgid " pour retourner a la page d'acceuil"
+msgstr " to return to the home page"
+
+#: templates/about.html:5
+msgid ""
+"Ce site permet de generer l'aromaticité d'une molécule à partir d'un "
+"fichier .xyz ."
+msgstr "This website allow to generate the aromaticity of a molecule from a .xyz file."
+
+#: templates/about.html:9
+msgid "Il utilise les ressources du cluster LesCitesObscures appartenant au CTOM."
+msgstr "It uses the ressources from the cluster 'LesCitesObscures' owned by the CTOM."
+
+#: templates/confirmation.html:4
+msgid ""
+"Votre calcul vient de commencer. Vous recevrez un mail a l'adresse donnee"
+" quand le calcul sera fini "
+msgstr ""
+"Your calculation has just begun. You will receive an email at the given address"
+" when it will be finished"
+
+#: templates/confirmation.html:7
+msgid "Envoyer une autre molecule"
+msgstr "Send another molecule"
+
+#: templates/credits.html:4
+msgid "Liste tres detailles des gens ayant permis la réalisation de ce projet"
+msgstr "A very detailled list of all the people who helped realized this project"
+
+#: templates/header.html:16
+msgid "Accueil"
+msgstr "Home"
+
+#: templates/header.html:17
+msgid "Resultat"
+msgstr "Result"
+
+#: templates/header.html:18
+msgid "Credits"
+msgstr "Credits"
+
+#: templates/header.html:35
+msgid "À propos"
+msgstr "About us"
+
+#: templates/header.html:36
+msgid "Contact"
+msgstr "Contact"
+
+#: templates/index.html:9
+msgid "Molecule a calculer (au format xyz) : "
+msgstr "Molecule to calculate (file format .xyz) : "
+
+#: templates/index.html:13
+msgid "Adresse mail pour recevoir les resultats : "
+msgstr "Email address to receive the results : "
+
+#: templates/result.html:5 templates/resultMissing.html:12
+msgid "Chercher un autre résultat"
+msgstr "Look for other result"
+
+#: templates/result.html:8
+msgid "Voici les resultats de votre requete : "
+msgstr "Results of your request : "
+
+#: templates/resultMissing.html:5
+msgid "Les resultats associés à cet id sont soit inexistant, soit indisponible."
+msgstr "The results associated with this id are either non-existant or unavailable"
+
+#: templates/resultMissing.html:7
+msgid "Retourner a l'accueil"
+msgstr "Back to home page"
+
+#: templates/searchResult.html:4
+msgid "ID du résultat voulu : "
+msgstr "ID of the wanted result"
+
+#: templates/searchResult.html:5
+msgid "Chercher le résultat"
+msgstr "Look for the result"
+
+#: templates/test.html:5
+msgid "resultat : "
+msgstr "result :"
+
