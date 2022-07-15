@@ -20,7 +20,7 @@ msgstr ""
 
 #: templates/404.html:4
 msgid "Oops! Cette page n'existe pas"
-msgstr "Oops! This pafe doesn't exist."
+msgstr "Oops! This page doesn't exist."
 
 #: templates/404.html:5
 msgid "Appuyez ici"
@@ -102,7 +102,7 @@ msgstr "Back to home page"
 
 #: templates/searchResult.html:4
 msgid "ID du résultat voulu : "
-msgstr "ID of the wanted result"
+msgstr "ID of the wanted result : "
 
 #: templates/searchResult.html:5
 msgid "Chercher le résultat"
@@ -110,5 +110,5 @@ msgstr "Look for the result"
 
 #: templates/test.html:5
 msgid "resultat : "
-msgstr "result :"
+msgstr "result : "
 

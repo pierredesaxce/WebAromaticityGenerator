@@ -14,8 +14,8 @@ import paramiko
 import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
-from flask import url_for, Flask, render_template, request, g
-from flask_babel import Babel
+from flask import url_for, Flask, render_template, request, Blueprint, g
+from flask_babel import Babel, refresh
 from flask_mail import Mail, Message
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -24,15 +24,20 @@ app = Flask(__name__,
             static_url_path='',
             static_folder='ressources',
             template_folder='templates')
-app.config['LANGUAGES'] = ['en', 'fr']
+app.config.update(dict(
+    LANGUAGES={
+        'en': 'English',
+        'fr': 'Francais'
+    }
+))
+
 babel = Babel(app)
 
 
 @babel.localeselector
 def get_locale():
-    if not g.get('lang_code', None):
-        g.lang_code = request.accept_languages.best_match(app.config['LANGUAGES'])
-    return g.lang_code
+    print(request.accept_languages.best_match(app.config['LANGUAGES'].keys()))
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
 
 try:
