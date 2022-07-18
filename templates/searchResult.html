@@ -8,7 +8,7 @@
 window.onload = function() {
   document.getElementById('btn').onclick = function()
   {
-    window.location.href = "{{ url_for('result') }}/"+document.getElementById("resultID").value
+    window.location.href = "{{ url_for('app.result') }}/"+document.getElementById("resultID").value
   };
 }
 </script>

@@ -17,6 +17,15 @@
   width: 150px;
 }
 
+.country{
+    text-decoration: none;
+}
+
+.country img{
+  height: 30px;
+  width: 30px;
+}
+
 .nav-links {
   list-style: none;
   display: flex;

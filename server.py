@@ -14,7 +14,7 @@ import paramiko
 import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
-from flask import url_for, Flask, render_template, request, Blueprint, g
+from flask import url_for, Flask, render_template, request, Blueprint, g, redirect
 from flask_babel import Babel, refresh
 from flask_mail import Mail, Message
 
@@ -24,6 +24,7 @@ app = Flask(__name__,
             static_url_path='',
             static_folder='ressources',
             template_folder='templates')
+
 app.config.update(dict(
     LANGUAGES={
         'en': 'English',
@@ -33,11 +34,27 @@ app.config.update(dict(
 
 babel = Babel(app)
 
+bp = Blueprint('app',
+               __name__,
+               url_prefix='/<lang_code>',
+               template_folder='templates',
+               static_folder='ressources',
+               static_url_path='')
+
+
+@bp.url_defaults
+def add_language_code(endpoint, values):
+    values.setdefault('lang_code', g.lang_code)
+
+
+@bp.url_value_preprocessor
+def pull_lang_code(endpoint, values):
+    g.lang_code = values.pop('lang_code', None)
+
 
 @babel.localeselector
 def get_locale():
-    print(request.accept_languages.best_match(app.config['LANGUAGES'].keys()))
-    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+    return g.lang_code
 
 
 try:
@@ -85,6 +102,7 @@ def send_email(sender, receiver, subject, body):
         print(traceback.format_exc())
 
 
+# todo : translate everything here need to indicate text to translate with _() => _(someTextToTranslate) and using babel
 def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it will be useful later
     """Check if the subg16 jobs started are done. If a job is finished, retrieve the log file with the result,
     email the user and remove it from the dictionary of job to check. """
@@ -127,7 +145,7 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
             running_subg16_job_mail.pop(job)
 
 
-@app.route('/result/<id>')
+@bp.route('/result/<id>')
 def show_result(id):
     try:
         output_file = open("./output/" + id + ".log", "r")
@@ -147,7 +165,7 @@ def show_result(id):
     return render_template("result.html", result=result)
 
 
-@app.route("/confirmation", methods=['POST'])
+@bp.route("/confirmation", methods=['POST'])
 def confirm():
     render_template("confirmation.html")
 
@@ -194,7 +212,7 @@ def confirm():
     return render_template("confirmation.html", mail=input_mail)
 
 
-@app.route("/test")  # example on how to display a matplot. todo : delete after use in result.
+@bp.route("/test")  # example on how to display a matplot. todo : delete after use in result.
 def test():
     # fig = create_projection("./output/test.txt")
 
@@ -213,35 +231,42 @@ def test():
     return render_template("test.html", image=aromaticity_fig_result[0])
 
 
-@app.route("/credits")
+@bp.route("/credits")
 def credits():
     return render_template("credits.html")
 
 
-@app.route("/result")
+@bp.route("/result")
 def result():
     return render_template("searchResult.html")
 
 
-@app.route("/contact")
+@bp.route("/contact")
 def contact():
     return render_template("contact.html")
 
 
-@app.route("/about")
+@bp.route("/about")
 def about():
     return render_template("about.html")
 
 
-@app.route("/")
+@bp.route("/")
 def index():
     return render_template("index.html")
 
 
-@app.errorhandler(404)
+@bp.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
 
+
+@app.route("/")
+def default_link():  # Here to save the day if there's no language indicator.
+    g.lang_code = request.accept_languages.best_match(app.config['LANGUAGES'])
+    return redirect(url_for('app.index'))
+
+app.register_blueprint(bp)
 
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()

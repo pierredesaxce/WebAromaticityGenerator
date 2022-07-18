@@ -3,7 +3,7 @@
 
 <p> {{_('Votre calcul vient de commencer. Vous recevrez un mail a l\'adresse donnee quand le calcul sera fini ')}}( {{ mail }} ).</p>
 
-<a  href="{{ url_for('index') }}">
+<a  href="{{ url_for('app.index') }}">
     <button>{{_('Envoyer une autre molecule')}}</button>
 </a>
 {% endblock %}

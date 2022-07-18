@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 
 <head>
     <title>WebAromaticityGenerator</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('app.static', filename='styles.css') }}">
 </head>
 
 <body>
 
   <nav class="navbar">
     <a href="https://ism2.univ-amu.fr/fr/ctom/ctom" class="logo">
-      <img src=" {{url_for ('static' , filename='ctom_logo.gif') }} ">
+      <img src=" {{url_for ('app.static' , filename='ctom_logo.gif') }} ">
     </a>
+      <div>
+          <a href="http://localhost:5000/en/" class="country">
+            <img src="https://cdn-icons-png.flaticon.com/128/330/330425.png">
+          </a>
+
+          <a href="http://localhost:5000/fr/" class="country">
+            <img src="https://cdn-icons-png.flaticon.com/512/330/330490.png">
+          </a>
+      </div>
     <ul class="nav-links">
-      <li class="nav-item"><a href="{{ url_for('index') }}">{{_('Accueil')}}</a></li>
-      <li class="nav-item"><a href="{{ url_for('result') }}">{{_('Resultat')}}</a></li>
-      <li class="nav-item"><a href="{{ url_for('credits') }}">{{_('Credits')}}</a></li>
+      <li class="nav-item"><a href="{{ url_for('app.index') }}">{{_('Accueil')}}</a></li>
+      <li class="nav-item"><a href="{{ url_for('app.result') }}">{{_('Resultat')}}</a></li>
+      <li class="nav-item"><a href="{{ url_for('app.credits') }}">{{_('Credits')}}</a></li>
     </ul>
   </nav>
 
@@ -28,24 +37,24 @@
 <footer>
 
     <div>
-      <h2 class="footer-heading"><a href="{{ url_for('index') }}" class="websiteName">Aromaticity Generator</a></h2>
+      <h2 class="footer-heading"><a href="{{ url_for('app.index') }}" class="websiteName">Aromaticity Generator</a></h2>
     </div>
     <div>
       <ul class="footer-links">
-        <li class="footer-link-item"><a href="{{ url_for('about') }}">{{_('À propos')}}</a></li>
-        <li class="footer-link-item"><a href="{{ url_for('contact') }}">{{_('Contact')}}</a></li>
+        <li class="footer-link-item"><a href="{{ url_for('app.about') }}">{{_('À propos')}}</a></li>
+        <li class="footer-link-item"><a href="{{ url_for('app.contact') }}">{{_('Contact')}}</a></li>
       </ul>
     </div>
     <div>
       <ul class="footer-logos">
         <li class="footer-logo"><a href="https://ism2.univ-amu.fr/fr/ctom/ctom" class="logo">
-          <img src=" {{url_for ('static' , filename='ctom_white_logo.gif') }} ">
+          <img src=" {{url_for ('app.static' , filename='ctom_white_logo.gif') }} ">
         </a></li>
         <li class="footer-logo" ><a href="https://www.univ-amu.fr/" class="logo">
-          <img src=" {{url_for ('static' , filename='amu_logo.jpg') }} ">
+          <img src=" {{url_for ('app.static' , filename='amu_logo.jpg') }} ">
         </a></li>
         <li class="footer-logo"><a href="https://ism2.univ-amu.fr/fr" class="logo">
-          <img src=" {{url_for ('static' , filename='ism2_logo.gif') }} ">
+          <img src=" {{url_for ('app.static' , filename='ism2_logo.gif') }} ">
         </a></li>
       </ul>
     </div>

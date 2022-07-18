@@ -5,7 +5,7 @@
 <div class="submission-box">
 
     <div class="form-box">
-        <form action="{{ url_for('confirm') }}" enctype="multipart/form-data" method="POST">
+        <form action="{{ url_for('app.confirm') }}" enctype="multipart/form-data" method="POST">
             <label>{{_('Molecule a calculer (au format xyz) : ')}}</label><br>
             <input type="file" id="inputFile" name="inputFile" accept=".xyz" onchange="updateMolecule()" required>
             <br>
