@@ -28,6 +28,10 @@ app.config.update(dict(
     }
 ))
 
+@app.route("/language=<language>")
+def set_language(language=None):
+    g.lang_code = language
+    return redirect(url_for('app.index'))
 
 babel = Babel(app)
 

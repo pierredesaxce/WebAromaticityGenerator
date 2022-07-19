@@ -13,11 +13,11 @@
           <h2 class="footer-heading"><a href="{{ url_for('app.index') }}" class="websiteName">Aromaticity Generator</a></h2>
       </div>
       <div>
-          <a href="http://localhost:5000/en/" class="country">
+          <a href="{{ url_for('set_language', language='en')}}" class="country">
             <img src="https://cdn-icons-png.flaticon.com/128/330/330425.png">
           </a>
 
-          <a href="http://localhost:5000/fr/" class="country">
+          <a href="{{ url_for('set_language', language='fr')}}" class="country">
             <img src="https://cdn-icons-png.flaticon.com/512/330/330490.png">
           </a>
       </div>
