@@ -103,6 +103,7 @@ def send_email(sender, receiver, subject, body):
 
 
 # todo : translate everything here need to indicate text to translate with _() => _(someTextToTranslate) and using babel
+# or maybe don't, yannick said that's fine so if someone wants to bother feel free to.
 def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it will be useful later
     """Check if the subg16 jobs started are done. If a job is finished, retrieve the log file with the result,
     email the user and remove it from the dictionary of job to check. """
@@ -113,11 +114,10 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
             output = stdout.readlines()
             output_status = (output[-1].split("|"))[-3]
             print(output_status)
-
+            subject = "Aromaticity Calculation Result"
             if output_status == "FAILED":
 
-                subject = "Resultat calcul d\'aromaticite"
-                body = "Votre calcul d'aromaticite a echoue. Re-essayez et verifiez que le document envoye est correct"
+                body = "Your aromaticity calculation failed. Check that the document you've sent is correct and retry."
                 send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
@@ -134,10 +134,8 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
                 pngImageB64String = "data:image/png;base64,"
                 pngImageB64String += base64.b64encode(png_image.getvalue()).decode('utf8')
                 aromaticity_fig_result[0] = pngImageB64String
-                subject = "Resultat calcul d\'aromaticite"
-                body = "Votre calcul d'aromaticite ( id = " + job_id + ") vient de se terminer. Retrouvez les " \
-                                                                       "resultats a l'adresse : " \
-                                                                       "http://localhost:5000/result/" + job_id
+                body = "Your aromaticity calculation ( id = " + job_id + ") ended. You can find the results here : " \
+                                                                         "http://localhost:5000/result/" + job_id
                 send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
@@ -265,6 +263,7 @@ def not_found(e):
 def default_link():  # Here to save the day if there's no language indicator.
     g.lang_code = request.accept_languages.best_match(app.config['LANGUAGES'])
     return redirect(url_for('app.index'))
+
 
 app.register_blueprint(bp)
 
