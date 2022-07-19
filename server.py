@@ -3,9 +3,6 @@ from __future__ import print_function
 import atexit
 import base64
 import io
-import os
-import os.path
-import os.path
 import sys
 import smtplib
 import traceback
@@ -16,7 +13,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
 from flask import url_for, Flask, render_template, request, Blueprint, g, redirect
 from flask_babel import Babel, refresh
-from flask_mail import Mail, Message
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
@@ -32,10 +28,6 @@ app.config.update(dict(
     }
 ))
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
-scheduler.start()
-atexit.register(lambda: scheduler.shutdown())
 
 babel = Babel(app)
 
@@ -271,6 +263,12 @@ def default_link():  # Here to save the day if there's no language indicator.
 
 
 app.register_blueprint(bp)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
+
 
 if __name__ == "__main__":
     app.run()
