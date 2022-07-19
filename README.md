@@ -56,3 +56,7 @@ It will open create a server on localhost using the port 5000. The user can open
  
 An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
 It only works with one file ( output/test.txt ) and is not a fully finished feature rn.
+
+## Adding a language
+
+You can find a guide to add a new language to the website in the translation folder.
