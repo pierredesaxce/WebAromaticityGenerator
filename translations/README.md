@@ -49,7 +49,7 @@ msgstr ""                                   Translated version of the text (empt
 ```
 #: templates/404.html:4
 msgid "Oops! Cette page n'existe pas"
-msgstr "Oops! This page doesn't exist."     Translated version of the text (empty here)
+msgstr "Oops! This page doesn't exist."     Translated version of the text (completed here)
 ```
 
 Once translated, you need to compile the messages.po file using the following command :
