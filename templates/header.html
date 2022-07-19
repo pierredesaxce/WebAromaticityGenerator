@@ -9,9 +9,9 @@
 <body>
 
   <nav class="navbar">
-    <a href="https://ism2.univ-amu.fr/fr/ctom/ctom" class="logo">
-      <img src=" {{url_for ('app.static' , filename='ctom_logo.gif') }} ">
-    </a>
+      <div>
+          <h2 class="footer-heading"><a href="{{ url_for('app.index') }}" class="websiteName">Aromaticity Generator</a></h2>
+      </div>
       <div>
           <a href="http://localhost:5000/en/" class="country">
             <img src="https://cdn-icons-png.flaticon.com/128/330/330425.png">
@@ -35,7 +35,6 @@
 </body>
 
 <footer>
-
     <div>
       <h2 class="footer-heading"><a href="{{ url_for('app.index') }}" class="websiteName">Aromaticity Generator</a></h2>
     </div>

@@ -32,6 +32,11 @@ app.config.update(dict(
     }
 ))
 
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
+
 babel = Babel(app)
 
 bp = Blueprint('app',
@@ -268,8 +273,4 @@ def default_link():  # Here to save the day if there's no language indicator.
 app.register_blueprint(bp)
 
 if __name__ == "__main__":
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
-    scheduler.start()
-    atexit.register(lambda: scheduler.shutdown())
     app.run()
