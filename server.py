@@ -28,10 +28,12 @@ app.config.update(dict(
     }
 ))
 
+
 @app.route("/language=<language>")
 def set_language(language=None):
     g.lang_code = language
     return redirect(url_for('app.index'))
+
 
 babel = Babel(app)
 
@@ -272,7 +274,6 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
-
 
 if __name__ == "__main__":
     app.run()

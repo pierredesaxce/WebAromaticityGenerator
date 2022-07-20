@@ -1,66 +1,7 @@
 import os
-from tkinter import filedialog
 
 import matplotlib.pyplot as plt
 import numpy as np
-from tkinter import *
-from threading import Thread
-
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-
-from PIL import Image, ImageTk
-from itertools import count, cycle
-
-
-class ImageLabel(Label):
-    """
-    A Label that displays images, and plays them if they are gifs
-    :im: A PIL Image instance or a string filename
-    """
-
-    def load(self, im):
-        if isinstance(im, str):
-            im = Image.open(im)
-        frames = []
-
-        try:
-            for i in count(1):
-                frames.append(ImageTk.PhotoImage(im.copy()))
-                im.seek(i)
-        except EOFError:
-            pass
-        self.frames = cycle(frames)
-
-        try:
-            self.delay = im.info['duration']
-        except:
-            self.delay = 100
-
-        if len(frames) == 1:
-            self.config(image=next(self.frames))
-        else:
-            self.next_frame()
-
-    def unload(self):
-        self.config(image=None)
-        self.frames = None
-
-    def next_frame(self):
-        if self.frames:
-            self.config(image=next(self.frames))
-            self.after(self.delay, self.next_frame)
-
-
-r = Tk()
-r.geometry("900x500")
-input_frame = Frame(r)
-input_frame.pack()
-output_frame = Frame(r)
-output_frame.pack(side=BOTTOM)
-r.title('MolAromaProjection')
-waitGif = ImageLabel(r)
-entry = Entry(input_frame)
-# dictionary of diverse value
 
 colorMol = {"C": "black", "H": "grey"}
 sizeMol = {"C": 0.2, "H": 0.1}  # test // todo : ask if it's fine to do that. Also maybe let the user change the values
@@ -68,50 +9,6 @@ colorAroma = {0: (1, 0.898, 0.8), 1: (0.984, 0.984, 0.992), 2: (0.906, 0.906, 0.
               4: (0.753, 0.753, 0.875)}
 
 timer_id = None
-
-
-def interface_generate():
-    # Creating the GUI
-
-    Label(input_frame, text='emplacement du fichier à parser : ').grid(row=0, column=0)
-    entry.grid(row=0, column=1)
-    button_file = Button(input_frame,
-                         text="Chercher le fichier",
-                         command=browse_files)
-    button_file.grid(row=0, column=2)
-    button = Button(r, text='Parser', width=25,
-                    command=lambda: Thread(target=interface_create_projection, args=(entry.get(),)).start())
-
-    button.pack()
-    waitGif.pack()
-
-    r.mainloop()
-
-
-def interface_create_projection(filename):
-    waitGif.load("ressources/loading.gif")
-
-    for child in output_frame.winfo_children():
-        child.destroy()
-
-    graph_frame = Frame(output_frame)
-
-    canvas = FigureCanvasTkAgg(create_projection(filename), master=graph_frame)
-    canvas.draw()
-    # placing the canvas on the Tkinter window
-    canvas.get_tk_widget().pack()
-
-    # creating the Matplotlib toolbar
-    toolbar = NavigationToolbar2Tk(canvas, graph_frame)
-    toolbar.children['!button4'].pack_forget()
-    toolbar.update()
-
-    # placing the toolbar on the Tkinter window
-    canvas.get_tk_widget().pack()
-
-    graph_frame.pack()
-
-    waitGif.unload()
 
 
 def no_GUI_create_projection():
@@ -278,4 +175,4 @@ if __name__ == '__main__':
     # while not os.path.isfile(filename_to_parse):
     #    filename_to_parse = input("chemin incorrect ou incomplet. veuillez re-essayer : \n")
     # create_projection(filename_to_parse)
-    interface_generate()
+    no_GUI_create_projection()
