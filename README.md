@@ -46,6 +46,8 @@ It is required to create a folder called "slurm-input" and a folder called "slur
 
 # Usage
 
+## Development
+
 To use it for development purposes, you just need to go into the root folder of the project and use the following command :
 
 ```
@@ -56,6 +58,8 @@ It will open create a server on localhost using the port 5000. The user can open
  
 An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
 It only works with one file ( output/test.txt ) and is not a fully finished feature rn.
+
+## Production
 
 To deploy the website you need to start it through a WSGI server of your choice or have it hosted on another platform. for more detail look here : https://flask.palletsprojects.com/en/2.1.x/deploying/
 
