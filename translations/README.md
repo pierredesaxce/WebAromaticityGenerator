@@ -30,8 +30,10 @@ Keeping the old version allows to copy and paste the unchanged content and avoid
 
 ### Generating language file :
 
+For the rest of this guide, LANG_CODE needs to be replaced with the language code corresponding to the language you want to add (English=>en, French=>fr)
+
 In the root folder, execute the following commands : 
-LANG_CODE needs to be replaced with the language code corresponding to the language you want to add (English=>en, French=>fr)
+
 ```
 pybabel extract -F babel.cfg -o messages.pot .
 pybabel init -i messages.pot -d translations -l LANG_CODE
@@ -71,4 +73,16 @@ app.config.update(dict(
         'fr': 'Francais'
     }
 ))
+```
+
+# Additional step :
+
+The language you just added is only available through modifying the url or setting your browser parameter to this language. is you want to add a button to change the language you need to add it with the other in the file header.html (in the templates folder).
+
+the easiest way to add it is to follow the same format as the other languages and to put it inside of the same div :
+
+```
+<a href="{{ url_for('set_language', language='LANG_CODE')}}" class="country">
+            <img src="URL to a picture of a flag of the country">
+          </a>
 ```
