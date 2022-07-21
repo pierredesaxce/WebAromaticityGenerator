@@ -38,7 +38,7 @@ passswordOnTheCluster
 resultMailAddress
 ```
 
-The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. The address sending them is alta@univ-amu.fr .
+The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. Those have been sent to you by alta@univ-amu.fr .
 
 The "resultMailAddress" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
 
