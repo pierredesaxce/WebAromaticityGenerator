@@ -14,6 +14,7 @@ git clone https://github.com/pierredesaxce/WebAromaticityGenerator.git
 After downloading the project, you'll be on the master branch which as not yet been updated, use this command to be on a functioning branch :
 
 ```
+cd WebAromaticityGenerator
 git checkout preprod
 ```
 
