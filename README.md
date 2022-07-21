@@ -54,7 +54,7 @@ To use it for development purposes, you just need to go into the root folder of 
 python3 server.py
 ```
 
-It will open create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
+It will create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
  
 An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
 It only works with one file ( output/test.txt ) and is not a fully finished feature rn.
@@ -69,6 +69,8 @@ Here I will show you how to start it using Gunicorn. You need to be in the root 
 pip install gunicorn
 gunicorn -w 4 'server:app'
 ```
+
+It will create a server on localhost using the port 8000. The user can open the main page of the website by going to http://localhost:8000/ .
 
 ## Adding a language
 
