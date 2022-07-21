@@ -61,7 +61,7 @@ It only works with one file ( output/test.txt ) and is not a fully finished feat
 
 ## Production
 
-To deploy the website you need to start it through a WSGI server of your choice or have it hosted on another platform. for more detail look here : https://flask.palletsprojects.com/en/2.1.x/deploying/
+To deploy the website you need to start it through a WSGI server of your choice or have it hosted on another platform. For more details, look here : https://flask.palletsprojects.com/en/2.1.x/deploying/
 
 Here I will show you how to start it using Gunicorn. You need to be in the root of the project :
 
