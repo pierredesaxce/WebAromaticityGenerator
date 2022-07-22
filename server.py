@@ -13,6 +13,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
 from flask import url_for, Flask, render_template, request, Blueprint, g, redirect
 from flask_babel import Babel, refresh
+from werkzeug.serving import run_simple
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
@@ -20,6 +22,8 @@ app = Flask(__name__,
             static_url_path='',
             static_folder='ressources',
             template_folder='templates')
+
+app.config['APPLICATION_ROOT'] = '/aromagen'
 
 app.config.update(dict(
     LANGUAGES={
@@ -70,15 +74,19 @@ username = file.readline()
 username = username[:-1]
 password = file.readline()
 password = password[:-1]
+hostname = file.readline()
+hostname = hostname[:-1]
 mail_address = file.readline()
 
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh_client.connect(hostname="10.184.4.20", username=username, password=password, allow_agent=False, look_for_keys=False)
+ssh_client.connect(hostname=hostname, username=username, password=password, allow_agent=False, look_for_keys=False)
 
 running_subg16_job_mail = {}
 aromaticity_fig_result = {}
 
+global url_root  # That's so fucking bad.
+url_root = ""  # I need to find a better way to do that.
 
 def send_email(sender, receiver, subject, body):
     """Send an email using the parameters. The email is sent through the smtp server of Aix-Marseille University
@@ -105,7 +113,7 @@ def send_email(sender, receiver, subject, body):
         print(traceback.format_exc())
 
 
-# todo : translate everything here need to indicate text to translate with _() => _(someTextToTranslate) and using babel
+# todo : translate everything here.Need to indicate text to translate with _() => _(someTextToTranslate) and using babel
 # or maybe don't, yannick said that's fine so if someone wants to bother feel free to.
 def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it will be useful later
     """Check if the subg16 jobs started are done. If a job is finished, retrieve the log file with the result,
@@ -116,9 +124,9 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
             stdin, stdout, stderr = ssh_client.exec_command("/usr/bin/sacct -p -j " + job_id)
             output = stdout.readlines()
             output_status = (output[-1].split("|"))[-3]
-            print(output_status)
+            print(job_id + " status : " + output_status)
             subject = "Aromaticity Calculation Result"
-            if output_status == "FAILED":
+            if output_status == "FAILED" or output_status == "OUT_OF_MEMORY":
 
                 body = "Your aromaticity calculation failed. Check that the document you've sent is correct and retry."
                 send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
@@ -138,7 +146,7 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
                 pngImageB64String += base64.b64encode(png_image.getvalue()).decode('utf8')
                 aromaticity_fig_result[0] = pngImageB64String
                 body = "Your aromaticity calculation ( id = " + job_id + ") ended. You can find the results here : " \
-                                                                         "http://localhost:5000/result/" + job_id
+                       + url_root + "en/result/" + job_id
                 send_email(mail_address, running_subg16_job_mail[job_id], subject, body)
                 job_done.append(job_id)
 
@@ -198,7 +206,10 @@ def confirm():
     nfile.write("\n")
     nfile.write("\n")
     nfile.close()
-
+    # todo : change that part. If multiple request are sent in rapid succession the command below is executed on the
+    # same file.
+    # IDEA : instead of inputMolecule, give it a random number (between like 0 and 100 000). Once the job is done,
+    # instead of getting jobID/inputmol.log, get jobID/*.log
     ftp_client = ssh_client.open_sftp()
     ftp_client.put(nfile_name, "/home/" + username + "/slurm-input/" + nfile_name)
     ftp_client.close()
@@ -210,7 +221,7 @@ def confirm():
 
     # todo : check if the calcul as been started properly. if yes return confirmation.html, if not return failed.html
     # todo : create failed.html to tell the user why his request failed
-    return render_template("confirmation.html", mail=input_mail)
+    return render_template("confirmation.html", mail=input_mail, id=job_id)
 
 
 @bp.route("/test")  # example on how to display a matplot. todo : delete after use in result.
@@ -254,6 +265,10 @@ def about():
 
 @bp.route("/")
 def index():
+    global url_root
+    if url_root == "":
+        url_root = request.url_root
+        print(url_root)
     return render_template("index.html")
 
 
@@ -274,6 +289,14 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_subg16_job_status, trigger="interval", seconds=60)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
+
+
+def simple(env, resp):
+    resp('404', [('Content-Type', 'text/plain')])
+    return ["This is a 404 page. Please be scared.".encode()]
+
+
+app.wsgi_app = DispatcherMiddleware(simple, {'/aromagen': app.wsgi_app})
 
 if __name__ == "__main__":
     app.run()
