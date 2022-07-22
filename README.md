@@ -14,6 +14,7 @@ git clone https://github.com/pierredesaxce/WebAromaticityGenerator.git
 After downloading the project, you'll be on the master branch which as not yet been updated, use this command to be on a functioning branch :
 
 ```
+cd WebAromaticityGenerator
 git checkout preprod
 ```
 
@@ -38,7 +39,7 @@ passswordOnTheCluster
 resultMailAddress
 ```
 
-The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. The address sending them is alta@univ-amu.fr .
+The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. Those have been sent to you by alta@univ-amu.fr .
 
 The "resultMailAddress" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
 
@@ -46,17 +47,33 @@ It is required to create a folder called "slurm-input" and a folder called "slur
 
 # Usage
 
-To use it, you just need to go into the project folder and use the following command :
+## Development
+
+To use it for development purposes, you just need to go into the root folder of the project and use the following command :
 
 ```
 python3 server.py
 ```
 
-It will open create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
+It will create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
  
 An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
 It only works with one file ( output/test.txt ) and is not a fully finished feature rn.
 
+## Production
+
+To deploy the website you need to start it through a WSGI server of your choice or have it hosted on another platform. For more details, look here : https://flask.palletsprojects.com/en/2.1.x/deploying/
+
+Here I will show you how to start it using Gunicorn. You need to be in the root of the project :
+
+```
+pip install gunicorn
+gunicorn -w 4 'server:app'
+```
+
+It will create a server on localhost using the port 8000. The user can open the main page of the website by going to http://localhost:8000/ .
+
 ## Adding a language
 
-You can find a guide to add a new language to the website in the translation folder.
+You can find a guide to add a new language to the website in the translation folder : 
+https://github.com/pierredesaxce/WebAromaticityGenerator/tree/preprod/translations
