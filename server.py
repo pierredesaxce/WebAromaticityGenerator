@@ -7,23 +7,40 @@ import sys
 import smtplib
 import traceback
 import paramiko
+import random
+import os
 
 import email.message
 from apscheduler.schedulers.background import BackgroundScheduler
 from aromaGraph import create_projection  # may need to implement the method directly instead of having the whole file
 from flask import url_for, Flask, render_template, request, Blueprint, g, redirect
 from flask_babel import Babel, refresh
-from werkzeug.serving import run_simple
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
+try:
+    config_file = open("config", "r")
+except:
+    print("donnees de connexion au cluster manquantes")
+    sys.exit(1)
+
+path = config_file.readline()
+path = path[:-1]
+smtp_serv = config_file.readline()
+smtp_serv = smtp_serv[:-1]
+smtp_port = config_file.readline()
+smtp_port = smtp_port[:-1]
+mail_address = config_file.readline()
+
+config_file.close()
 
 app = Flask(__name__,
             static_url_path='',
             static_folder='ressources',
             template_folder='templates')
 
-app.config['APPLICATION_ROOT'] = '/aromagen'
+app.config['APPLICATION_ROOT'] = '/' + path
 
 app.config.update(dict(
     LANGUAGES={
@@ -65,18 +82,18 @@ def get_locale():
 
 
 try:
-    file = open("token", "r")
+    token_file = open("token", "r")
 except:
     print("donnees de connexion au cluster manquantes")
     sys.exit(1)
 
-username = file.readline()
+username = token_file.readline()
 username = username[:-1]
-password = file.readline()
+password = token_file.readline()
 password = password[:-1]
-hostname = file.readline()
-hostname = hostname[:-1]
-mail_address = file.readline()
+hostname = token_file.readline()
+
+token_file.close()
 
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -87,6 +104,7 @@ aromaticity_fig_result = {}
 
 global url_root  # That's so fucking bad.
 url_root = ""  # I need to find a better way to do that.
+
 
 def send_email(sender, receiver, subject, body):
     """Send an email using the parameters. The email is sent through the smtp server of Aix-Marseille University
@@ -106,7 +124,7 @@ def send_email(sender, receiver, subject, body):
     m.set_payload(body)
 
     try:
-        smtpObj = smtplib.SMTP('smtp.univ-amu.fr', 25)
+        smtpObj = smtplib.SMTP(smtp_serv, smtp_port)
         smtpObj.sendmail(sender, receivers, m.as_string())
         print("Successfully sent email")
     except:
@@ -134,9 +152,10 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
 
             elif output_status == "COMPLETED":
 
-                nfile_name = 'inputMolecule.log'
+                stdin, stdout, stderr = ssh_client.exec_command(
+                    "mv /home/" + username + "/slurm-output/" + job_id + "/*.log /home/" + username + "/slurm-output/" + job_id + "/result.log ")
                 ftp_client = ssh_client.open_sftp()
-                ftp_client.get("/home/" + username + "/slurm-output/" + job_id + "/" + nfile_name,
+                ftp_client.get("/home/" + username + "/slurm-output/" + job_id + "/result.log",
                                "./output/" + job_id + ".log")
                 ftp_client.close()
 
@@ -158,18 +177,21 @@ def check_subg16_job_status():  # THIS NEED TO BE CHANGED but keep the code it w
 def show_result(id):
     try:
         output_file = open("./output/" + id + ".log", "r")
-        nfile_name = 'inputMolecule.log'
-        ftp_client = ssh_client.open_sftp()
-
-        ftp_client.get("/home/" + username + "/slurm-output/" + id + "/" + nfile_name,
-                       "./output/" + id + ".log")
-        ftp_client.close()
+        result = "".join(output_file.readlines())
 
     except:
+        try:
+            ftp_client = ssh_client.open_sftp()
+            ftp_client.get("/home/" + username + "/slurm-output/" + id + "/result.log",
+                           "./output/" + id + ".log")
+            ftp_client.close()
 
-        return render_template("resultMissing.html")
+            output_file = open("./output/" + id + ".log", "r")
 
-    result = "".join(output_file.readlines())
+            result = "".join(output_file.readlines())
+
+        except:
+            return render_template("resultMissing.html")
 
     return render_template("result.html", result=result)
 
@@ -180,7 +202,7 @@ def confirm():
 
     post_file = request.files['inputFile']
 
-    nfile_name = 'inputMolecule.com'
+    nfile_name = str(random.randint(1, 100000)) + '.com'
 
     nfile = open(nfile_name, 'w+')  # open file in append mode
     nfile.write("# opt B3LYP/6-31g\n\ni'm a commentary\n\n")
@@ -206,18 +228,19 @@ def confirm():
     nfile.write("\n")
     nfile.write("\n")
     nfile.close()
-    # todo : change that part. If multiple request are sent in rapid succession the command below is executed on the
-    # same file.
-    # IDEA : instead of inputMolecule, give it a random number (between like 0 and 100 000). Once the job is done,
-    # instead of getting jobID/inputmol.log, get jobID/*.log
+
     ftp_client = ssh_client.open_sftp()
     ftp_client.put(nfile_name, "/home/" + username + "/slurm-input/" + nfile_name)
     ftp_client.close()
     stdin, stdout, stderr = ssh_client.exec_command(
-        "cd ./slurm-input && /share/programs/bin/modifiedsubg16 inputMolecule.com")
+        "cd ./slurm-input && /share/programs/bin/modifiedsubg16 " + nfile_name)
+    # "cd ./slurm-input && /home/pdesaxce/modifiedsubg16 " + nfile_name) local modifiable subg16
+
     job_id = ((stdout.readlines())[-1].split())[-1]
     print(job_id)
     running_subg16_job_mail[job_id] = input_mail
+
+    os.remove(nfile_name)
 
     # todo : check if the calcul as been started properly. if yes return confirmation.html, if not return failed.html
     # todo : create failed.html to tell the user why his request failed
@@ -296,7 +319,7 @@ def simple(env, resp):
     return ["This is a 404 page. Please be scared.".encode()]
 
 
-app.wsgi_app = DispatcherMiddleware(simple, {'/aromagen': app.wsgi_app})
+app.wsgi_app = DispatcherMiddleware(simple, {'/' + path: app.wsgi_app})
 
 if __name__ == "__main__":
     app.run()

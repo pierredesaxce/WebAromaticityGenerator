@@ -36,12 +36,27 @@ The user also need to create a file called "token". It should be formatted as fo
 ```
 usernameOnTheCluster
 passswordOnTheCluster
-resultMailAddress
+clusterSSHAddress:clusterSSHPort
 ```
 
 The "usernameOnTheCluster" and "passswordOnTheCluster" are the one that you use to connect to the cluster and were sent to you when your account on the cluster is created. Those have been sent to you by alta@univ-amu.fr .
 
-The "resultMailAddress" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
+The "clusterSSHAddress:clusterSSHPort" is the address and port used to connect to the cluster through an SSH connection. the ":" needs to be present here.
+
+The file named "config" is needed too (already included but can be modified if needed) :
+
+```
+URLSubpath
+smtpServerAddress
+smtpServerPort
+resultMailAddress
+```
+
+The "URLSubpath" is the one used (example : http://127.0.0.1:8000/URLSubpath/en/)
+
+The "smtpServerAddress" and "smtpServerPort" refer to the address and port used to connect to the smtp server used to send the result email.
+
+The "clusterSSHAddress:clusterSSHPort" is the email address that will be used to send the result. You can put whatever you want as long as it's a valid email address. ( alta@univ-amu.fr is fine for example).
 
 It is required to create a folder called "slurm-input" and a folder called "slurm-output" on the cluster at the root of your personnal folder.
 
@@ -55,9 +70,9 @@ To use it for development purposes, you just need to go into the root folder of 
 python3 server.py
 ```
 
-It will create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/ . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
+It will create a server on localhost using the port 5000. The user can open the main page of the website by going to http://localhost:5000/URLSubpath (URLSubpath being the one present in the config file) . There, they can upload a .xyz file to receive a log file once the cluster is done processing it. (work in progress, the end goal should be a graph of the aromaticity of the molecule upload.
  
-An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/test as soon as one successful response as been sent.
+An example page to show how the aromaticity would be displayed, is available on http://localhost:5000/URLSubpath/test as soon as one successful response as been sent.
 It only works with one file ( output/test.txt ) and is not a fully finished feature rn.
 
 ## Production
@@ -71,7 +86,7 @@ pip install gunicorn
 gunicorn -w 4 'server:app'
 ```
 
-It will create a server on localhost using the port 8000. The user can open the main page of the website by going to http://localhost:8000/ .
+It will create a server on localhost using the port 8000. The user can open the main page of the website by going to http://localhost:8000/URLSubpath (URLSubpath being the one present in the config file) .
 
 ## Adding a language
 
